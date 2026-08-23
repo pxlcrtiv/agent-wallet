@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-wallet"
+version = "0.1.0"
+description = "An AI agent for safe testnet transactions: inspects a wallet, checks allowances, dry-runs a tx, and explains risk in plain English before anything is signed. Sepolia only, safety by design."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "pxlcrtiv" }]
+keywords = ["ai-agent", "ethereum", "sepolia", "web3", "security", "agent-lab", "safety", "testnet", "transactions"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    # agent-lab is the agent core (https://github.com/pxlcrtiv/agent-lab).
+    # Locally you can point at a checkout with: pip install -e ../agent-lab
+    "agent-lab @ git+https://github.com/pxlcrtiv/agent-lab@main",
+    "web3>=6.15,<8",
+    "eth-account>=0.11",
+    "click>=8.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+
+[project.scripts]
+agent-wallet = "agent_wallet.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["agent_wallet*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = [
+    "network: hits a real RPC endpoint - usually skipped",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = ["docs", "examples"]
+
+[tool.ruff.lint]
+# Intentional deviations (with rationale):
+#   PLW1510 - subprocess in scripts/daily_update.py uses check=False on purpose
+#             (returncodes are handled explicitly).
+#   BLE001  - blind excepts isolate one RPC hiccup from killing a whole plan.
+#   UP031   - %-format strings keep CLI/demo output readable and match the
+#             agent-lab / portfolio repo family style.
+#   S112    - bare except-pass in parse_revert: malformed revert payloads
+#             must fail soft (return None), never raise.
+#   DTZ005/DTZ011 - daily_update.py deliberately works in local time
+#             (launchd schedules are local; the commit date is what matters).
+ignore = ["PLW1510", "BLE001", "UP031", "S112", "DTZ005", "DTZ011"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["F811", "F401"]
