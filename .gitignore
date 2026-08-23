@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# Env / secrets
+.env
+*.key
+!examples/*.key.example
+.venv/
+venv/
+
+# Daily Green pause marker (opt-in: `touch .daily-pause`)
+.daily-pause
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local scratch
+*.log

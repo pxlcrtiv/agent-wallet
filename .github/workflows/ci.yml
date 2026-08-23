@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install "agent-lab @ git+https://github.com/pxlcrtiv/agent-lab@main"
+          pip install -e .
+          pip install pytest ruff
+
+      - name: Unit tests (offline, fixtures provider — no network RPC)
+        run: python -m pytest tests -q
+
+      - name: CLI smoke — plan/inspect/chat/chain against fixtures://
+        run: |
+          agent-wallet --rpc fixtures:// chain | grep allowed
+          agent-wallet --rpc fixtures:// plan 0x2222222222222222222222222222222222222222 --amount 0.05 --json \
+            | python -c "import json,sys; p=json.load(sys.stdin); assert p['unsigned_tx']['type']=='0x2'; assert p['signed'] is False; print('plan JSON OK')"
+          agent-wallet --rpc fixtures:// inspect 0x1111111111111111111111111111111111111111 | grep -q "USDC"
+          agent-wallet --rpc fixtures:// chat "balance of 0x1111111111111111111111111111111111111111" | grep -q "get_balances"
+
+      - name: Mainnet lock smoke — sign must refuse chain id 1
+        run: |
+          python - <<'EOF'
+          import json
+          plan = {"chain_id": 1, "network": "mainnet", "from": "0x1111111111111111111111111111111111111111",
+                  "to": "0x2222222222222222222222222222222222222222", "value_human": "1 ETH", "fee_human": "0",
+                  "unsigned_tx": {"chainId": 1, "nonce": 0, "from": "0x1111111111111111111111111111111111111111",
+                                  "to": "0x2222222222222222222222222222222222222222", "value": 1, "gas": 21000,
+                                  "maxFeePerGas": 1000000000, "type": "0x2", "data": "0x"}}
+          open("/tmp/mainnet.json", "w").write(json.dumps(plan))
+          EOF
+          agent-wallet --rpc fixtures:// sign /tmp/mainnet.json --keyfile /dev/null; test $? -eq 3
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: ruff lint
+        run: |
+          pip install ruff
+          ruff check agent_wallet tests scripts --output-format=github

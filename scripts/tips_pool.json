@@ -1,0 +1,132 @@
+[
+  {
+    "title": "Testnets are for learning — mainnet is for money",
+    "body": "agent-wallet only touches Sepolia or a local anvil chain. On a testnet a mistake costs you a faucet refill; on mainnet it costs you real money. Keep the two worlds strictly separate: use a separate wallet and a separate browser profile for testnet activity.",
+    "command": "agent-wallet chain"
+  },
+  {
+    "title": "Dry-run before you sign, always",
+    "body": "eth_call simulation is free and instant. agent-wallet runs a dry-run of your exact payload before you ever see a 'sign' prompt. If the simulation reverts, the real transaction would too — do not sign it.",
+    "command": "agent-wallet plan 0x… --save plan.json"
+  },
+  {
+    "title": "An unsigned transaction is just a plan",
+    "body": "A transaction only becomes real when it carries a signature. Review the plan JSON — recipient, amount, fee, nonce — like you would review a contract clause. agent-wallet never attaches a signature automatically.",
+    "command": "cat plan.json"
+  },
+  {
+    "title": "EIP-1559: max fee is a ceiling, not a promise",
+    "body": "With type-0x2 transactions, maxFeePerGas is the most you will pay per gas unit; you usually pay less (base fee + priority fee). The risk summary shows worst-case fee so the ceiling is visible before signing.",
+    "command": "agent-wallet plan 0x… --json | grep maxFeePerGas"
+  },
+  {
+    "title": "Check what your wallet approved",
+    "body": "An ERC-20 allowance lets another address move your tokens up to the approved amount — even without your signature on each transfer. Run the allowance check to see exposure before you send more tokens anywhere.",
+    "command": "agent-wallet inspect 0x…"
+  },
+  {
+    "title": "Infinite approvals are a standing risk",
+    "body": "Approving max uint256 to a DEX or bridge means that contract could drain your tokens at any time if it is compromised. Revoke unused approvals, and never grant them to testnet tokens you care about.",
+    "command": "agent-wallet chat \"check allowance exposure\""
+  },
+  {
+    "title": "A contract recipient executes code",
+    "body": "Sending to an EOA is a plain transfer. Sending to a contract triggers its fallback logic — it can reject the send, re-enter, or hold the assets. agent-wallet flags contract recipients in the risk notes.",
+    "command": "agent-wallet plan 0x3333333333333333333333333333333333333333"
+  },
+  {
+    "title": "Verify token addresses independently",
+    "body": "Many 'tokens' are community deployments with no official issuer. Scam tokens can imitate a symbol or name. agent-wallet marks known-vs-unknown tokens in the risk notes — but always double-check the address in a block explorer.",
+    "command": "https://sepolia.etherscan.io"
+  },
+  {
+    "title": "Private keys stay on your machine",
+    "body": "No cloud service, chat app, or AI agent should ever hold your private key. agent-wallet reads keys from a local file or env var at sign time and never stores, sends, or logs them. Yours is yours.",
+    "command": "export AGENT_WALLET_PRIVATE_KEY=…"
+  },
+  {
+    "title": "A faucet funds the testnet, not your dreams",
+    "body": "Sepolia ETH has no market value. If your testnet wallet is dry, refill from a faucet — never 'buy' testnet ETH, never import your real mainnet key into a testnet tool.",
+    "command": "https://faucets.chain.link/sepolia"
+  },
+  {
+    "title": "Nonce gaps block your wallet",
+    "body": "Transactions broadcast out of order (nonce 9 before 8) get stuck in the mempool and can stall the whole account. Check the nonce in the plan — it should be the next sequential number for your address.",
+    "command": "agent-wallet inspect 0x…"
+  },
+  {
+    "title": "Reasons to trust a dry-run, and one not to",
+    "body": "A dry-run proves the payload does not revert against current state with your current balance. It does not prove the price will hold, that the recipient is honest, or that state will not change before your tx lands. Simulate again right before signing.",
+    "command": "agent-wallet sign plan.json"
+  },
+  {
+    "title": "RPC endpoints see your queries",
+    "body": "A public RPC node can observe the addresses you read. For privacy, run your own node or an anvil fork. For correctness, use a trusted endpoint — a malicious RPC can lie about balances and revert data.",
+    "command": "agent-wallet --rpc anvil plan 0x…"
+  },
+  {
+    "title": "Fees move; plans should not",
+    "body": "Ethereum base fees fluctuate every block. A plan made at 5 gwei may fail to confirm at 50 gwei. Re-plan (or re-sign with fresh fees) if the network is congested.",
+    "command": "agent-wallet plan 0x… --amount 0.01"
+  },
+  {
+    "title": "Gas limits: under-estimating reverts the send",
+    "body": "If your gas limit is below what the transaction actually needs, the tx reverts — you pay the fee and the transfer fails. The plan's limit comes from eth_estimateGas with headroom; do not hand-trim it.",
+    "command": "grep '\"gas\"' plan.json"
+  },
+  {
+    "title": "Testnet ≠ free of scams",
+    "body": "People absolutely farm testnet tokens and run phishing on Sepolia. Treat a testnet address like a mainnet one: same address-hygiene rules, same skepticism about 'prizes', 'airdrops', and 'verification' sites.",
+    "command": "agent-wallet inspect 0x…"
+  },
+  {
+    "title": "Agents make plans; humans make decisions",
+    "body": "An AI agent's job is to gather facts and explain risk clearly — not to push a button. If a tool or prompt ever urges you to 'just sign it', that is the moment to stop. You are the last line of defense.",
+    "command": "agent-wallet chat \"explain the risk of this plan\""
+  },
+  {
+    "title": "Your address is a fingerprint",
+    "body": "Reusing one address across chains and protocols links all of that activity. For portfolio experiments, generate fresh test wallets — anvil prints a new keypair list on every start.",
+    "command": "anvil"
+  },
+  {
+    "title": "Read the revert reason, not the error code",
+    "body": "A revert like 'insufficient allowance' tells you exactly what to fix; a generic 'execution reverted' without data is a smoke signal. agent-wallet decodes Error(string) reasons so failures read like English.",
+    "command": "agent-wallet chat \"dry run 0.01 ETH to 0x…\""
+  },
+  {
+    "title": "Keystores beat copy-paste",
+    "body": "If you sign often, store test keys in an encrypted keystore file (cast wallet import) instead of shell history. agent-wallet accepts --keyfile for exactly that workflow.",
+    "command": "cast wallet import testwallet --interactive"
+  },
+  {
+    "title": "The confirmation word exists for a reason",
+    "body": "agent-wallet requires typing the word 'sign' before it applies a signature. That deliberate pause is the cheapest insurance in web3: one moment to re-read recipient, amount, and fee.",
+    "command": "agent-wallet sign plan.json"
+  },
+  {
+    "title": "Balance checks are reads; sends are writes",
+    "body": "Reading a balance can never harm you. Signing and broadcasting change state forever. Keep the two verbs straight, and treat every 'send' as a permanent action even on a testnet.",
+    "command": "agent-wallet inspect 0x…"
+  },
+  {
+    "title": "Beware the copy-paste address swap",
+    "body": "Clipboard malware swaps pasted addresses for attacker-owned ones. Compare the first and last 6 characters of every address you paste, and use the checksummed form — it fails loudly if corrupted.",
+    "command": "agent-wallet plan 0xDeadBeef… --amount 0.01"
+  },
+  {
+    "title": "Automation should pause, not improvise",
+    "body": "The Daily Green script honors a .daily-pause marker and skips cleanly when the day is already covered. Automation you cannot pause is automation you do not control.",
+    "command": "touch .daily-pause"
+  },
+  {
+    "title": "Your agent is only as safe as its tools",
+    "body": "Tool schemas limit what an LLM can even attempt. agent-wallet exposes four read-only/planning tools — there is no 'send' tool that broadcasts without the explicit sign path. Fewer tools, fewer surprises.",
+    "command": "agent-wallet chat --help"
+  },
+  {
+    "title": "The plan file is your receipt",
+    "body": "Save plans with --save before signing. The JSON contains the exact unsigned payload — a permanent, inspectable record of what you agreed to broadcast.",
+    "command": "agent-wallet plan 0x… --save tx-2026-08-23.json"
+  }
+]
