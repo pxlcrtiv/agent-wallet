@@ -12,3 +12,10 @@ A revert like 'insufficient allowance' tells you exactly what to fix; a generic 
 
 > `agent-wallet chat "dry run 0.01 ETH to 0x…"`
 
+
+## 2026-08-24 — Agent & web3-safety tip: Keystores beat copy-paste
+
+If you sign often, store test keys in an encrypted keystore file (cast wallet import) instead of shell history. agent-wallet accepts --keyfile for exactly that workflow.
+
+> `cast wallet import testwallet --interactive`
+
