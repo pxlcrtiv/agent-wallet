@@ -19,3 +19,10 @@ If you sign often, store test keys in an encrypted keystore file (cast wallet im
 
 > `cast wallet import testwallet --interactive`
 
+
+## 2026-08-25 — Agent & web3-safety tip: The confirmation word exists for a reason
+
+agent-wallet requires typing the word 'sign' before it applies a signature. That deliberate pause is the cheapest insurance in web3: one moment to re-read recipient, amount, and fee.
+
+> `agent-wallet sign plan.json`
+
