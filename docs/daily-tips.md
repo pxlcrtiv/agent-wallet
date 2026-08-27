@@ -33,3 +33,10 @@ Reading a balance can never harm you. Signing and broadcasting change state fore
 
 > `agent-wallet inspect 0x…`
 
+
+## 2026-08-27 — Agent & web3-safety tip: Beware the copy-paste address swap
+
+Clipboard malware swaps pasted addresses for attacker-owned ones. Compare the first and last 6 characters of every address you paste, and use the checksummed form — it fails loudly if corrupted.
+
+> `agent-wallet plan 0xDeadBeef… --amount 0.01`
+
