@@ -40,3 +40,10 @@ Clipboard malware swaps pasted addresses for attacker-owned ones. Compare the fi
 
 > `agent-wallet plan 0xDeadBeef… --amount 0.01`
 
+
+## 2026-08-28 — Agent & web3-safety tip: Automation should pause, not improvise
+
+The Daily Green script honors a .daily-pause marker and skips cleanly when the day is already covered. Automation you cannot pause is automation you do not control.
+
+> `touch .daily-pause`
+
