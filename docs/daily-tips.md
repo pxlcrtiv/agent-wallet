@@ -47,3 +47,10 @@ The Daily Green script honors a .daily-pause marker and skips cleanly when the d
 
 > `touch .daily-pause`
 
+
+## 2026-08-29 — Agent & web3-safety tip: Your agent is only as safe as its tools
+
+Tool schemas limit what an LLM can even attempt. agent-wallet exposes four read-only/planning tools — there is no 'send' tool that broadcasts without the explicit sign path. Fewer tools, fewer surprises.
+
+> `agent-wallet chat --help`
+
