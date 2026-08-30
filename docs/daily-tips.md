@@ -54,3 +54,10 @@ Tool schemas limit what an LLM can even attempt. agent-wallet exposes four read-
 
 > `agent-wallet chat --help`
 
+
+## 2026-08-30 — Agent & web3-safety tip: The plan file is your receipt
+
+Save plans with --save before signing. The JSON contains the exact unsigned payload — a permanent, inspectable record of what you agreed to broadcast.
+
+> `agent-wallet plan 0x… --save tx-2026-08-23.json`
+
