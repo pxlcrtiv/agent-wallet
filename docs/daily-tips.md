@@ -61,3 +61,10 @@ Save plans with --save before signing. The JSON contains the exact unsigned payl
 
 > `agent-wallet plan 0x… --save tx-2026-08-23.json`
 
+
+## 2026-08-31 — Agent & web3-safety tip: Testnets are for learning — mainnet is for money
+
+agent-wallet only touches Sepolia or a local anvil chain. On a testnet a mistake costs you a faucet refill; on mainnet it costs you real money. Keep the two worlds strictly separate: use a separate wallet and a separate browser profile for testnet activity.
+
+> `agent-wallet chain`
+
