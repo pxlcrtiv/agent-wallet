@@ -68,3 +68,10 @@ agent-wallet only touches Sepolia or a local anvil chain. On a testnet a mistake
 
 > `agent-wallet chain`
 
+
+## 2026-09-01 — Agent & web3-safety tip: Dry-run before you sign, always
+
+eth_call simulation is free and instant. agent-wallet runs a dry-run of your exact payload before you ever see a 'sign' prompt. If the simulation reverts, the real transaction would too — do not sign it.
+
+> `agent-wallet plan 0x… --save plan.json`
+
