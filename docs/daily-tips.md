@@ -75,3 +75,10 @@ eth_call simulation is free and instant. agent-wallet runs a dry-run of your exa
 
 > `agent-wallet plan 0x… --save plan.json`
 
+
+## 2026-09-02 — Agent & web3-safety tip: An unsigned transaction is just a plan
+
+A transaction only becomes real when it carries a signature. Review the plan JSON — recipient, amount, fee, nonce — like you would review a contract clause. agent-wallet never attaches a signature automatically.
+
+> `cat plan.json`
+
