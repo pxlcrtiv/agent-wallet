@@ -82,3 +82,10 @@ A transaction only becomes real when it carries a signature. Review the plan JSO
 
 > `cat plan.json`
 
+
+## 2026-09-03 — Agent & web3-safety tip: EIP-1559: max fee is a ceiling, not a promise
+
+With type-0x2 transactions, maxFeePerGas is the most you will pay per gas unit; you usually pay less (base fee + priority fee). The risk summary shows worst-case fee so the ceiling is visible before signing.
+
+> `agent-wallet plan 0x… --json | grep maxFeePerGas`
+
