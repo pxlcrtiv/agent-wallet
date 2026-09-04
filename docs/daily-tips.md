@@ -96,3 +96,10 @@ An ERC-20 allowance lets another address move your tokens up to the approved amo
 
 > `agent-wallet inspect 0x…`
 
+
+## 2026-09-05 — Agent & web3-safety tip: Infinite approvals are a standing risk
+
+Approving max uint256 to a DEX or bridge means that contract could drain your tokens at any time if it is compromised. Revoke unused approvals, and never grant them to testnet tokens you care about.
+
+> `agent-wallet chat "check allowance exposure"`
+
