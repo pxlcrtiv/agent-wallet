@@ -89,3 +89,10 @@ With type-0x2 transactions, maxFeePerGas is the most you will pay per gas unit; 
 
 > `agent-wallet plan 0x… --json | grep maxFeePerGas`
 
+
+## 2026-09-04 — Agent & web3-safety tip: Check what your wallet approved
+
+An ERC-20 allowance lets another address move your tokens up to the approved amount — even without your signature on each transfer. Run the allowance check to see exposure before you send more tokens anywhere.
+
+> `agent-wallet inspect 0x…`
+
