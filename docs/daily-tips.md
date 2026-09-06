@@ -103,3 +103,10 @@ Approving max uint256 to a DEX or bridge means that contract could drain your to
 
 > `agent-wallet chat "check allowance exposure"`
 
+
+## 2026-09-06 — Agent & web3-safety tip: A contract recipient executes code
+
+Sending to an EOA is a plain transfer. Sending to a contract triggers its fallback logic — it can reject the send, re-enter, or hold the assets. agent-wallet flags contract recipients in the risk notes.
+
+> `agent-wallet plan 0x3333333333333333333333333333333333333333`
+
