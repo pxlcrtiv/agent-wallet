@@ -110,3 +110,10 @@ Sending to an EOA is a plain transfer. Sending to a contract triggers its fallba
 
 > `agent-wallet plan 0x3333333333333333333333333333333333333333`
 
+
+## 2026-09-07 — Agent & web3-safety tip: Verify token addresses independently
+
+Many 'tokens' are community deployments with no official issuer. Scam tokens can imitate a symbol or name. agent-wallet marks known-vs-unknown tokens in the risk notes — but always double-check the address in a block explorer.
+
+> `https://sepolia.etherscan.io`
+
