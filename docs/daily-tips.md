@@ -117,3 +117,10 @@ Many 'tokens' are community deployments with no official issuer. Scam tokens can
 
 > `https://sepolia.etherscan.io`
 
+
+## 2026-09-08 — Agent & web3-safety tip: Private keys stay on your machine
+
+No cloud service, chat app, or AI agent should ever hold your private key. agent-wallet reads keys from a local file or env var at sign time and never stores, sends, or logs them. Yours is yours.
+
+> `export AGENT_WALLET_PRIVATE_KEY=…`
+
