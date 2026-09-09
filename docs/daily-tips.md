@@ -124,3 +124,10 @@ No cloud service, chat app, or AI agent should ever hold your private key. agent
 
 > `export AGENT_WALLET_PRIVATE_KEY=…`
 
+
+## 2026-09-09 — Agent & web3-safety tip: A faucet funds the testnet, not your dreams
+
+Sepolia ETH has no market value. If your testnet wallet is dry, refill from a faucet — never 'buy' testnet ETH, never import your real mainnet key into a testnet tool.
+
+> `https://faucets.chain.link/sepolia`
+
