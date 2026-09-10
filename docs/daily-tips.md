@@ -131,3 +131,10 @@ Sepolia ETH has no market value. If your testnet wallet is dry, refill from a fa
 
 > `https://faucets.chain.link/sepolia`
 
+
+## 2026-09-10 — Agent & web3-safety tip: Nonce gaps block your wallet
+
+Transactions broadcast out of order (nonce 9 before 8) get stuck in the mempool and can stall the whole account. Check the nonce in the plan — it should be the next sequential number for your address.
+
+> `agent-wallet inspect 0x…`
+
