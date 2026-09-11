@@ -138,3 +138,10 @@ Transactions broadcast out of order (nonce 9 before 8) get stuck in the mempool 
 
 > `agent-wallet inspect 0x…`
 
+
+## 2026-09-11 — Agent & web3-safety tip: Reasons to trust a dry-run, and one not to
+
+A dry-run proves the payload does not revert against current state with your current balance. It does not prove the price will hold, that the recipient is honest, or that state will not change before your tx lands. Simulate again right before signing.
+
+> `agent-wallet sign plan.json`
+
