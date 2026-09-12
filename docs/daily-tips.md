@@ -145,3 +145,10 @@ A dry-run proves the payload does not revert against current state with your cur
 
 > `agent-wallet sign plan.json`
 
+
+## 2026-09-12 — Agent & web3-safety tip: RPC endpoints see your queries
+
+A public RPC node can observe the addresses you read. For privacy, run your own node or an anvil fork. For correctness, use a trusted endpoint — a malicious RPC can lie about balances and revert data.
+
+> `agent-wallet --rpc anvil plan 0x…`
+
