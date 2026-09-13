@@ -152,3 +152,17 @@ A public RPC node can observe the addresses you read. For privacy, run your own 
 
 > `agent-wallet --rpc anvil plan 0x…`
 
+
+## 2026-09-13 — Agent & web3-safety tip: Fees move; plans should not
+
+Ethereum base fees fluctuate every block. A plan made at 5 gwei may fail to confirm at 50 gwei. Re-plan (or re-sign with fresh fees) if the network is congested.
+
+> `agent-wallet plan 0x… --amount 0.01`
+
+
+## 2026-09-13 — Agent & web3-safety tip: Fees move; plans should not
+
+Ethereum base fees fluctuate every block. A plan made at 5 gwei may fail to confirm at 50 gwei. Re-plan (or re-sign with fresh fees) if the network is congested.
+
+> `agent-wallet plan 0x… --amount 0.01`
+
