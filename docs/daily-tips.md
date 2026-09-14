@@ -166,3 +166,10 @@ Ethereum base fees fluctuate every block. A plan made at 5 gwei may fail to conf
 
 > `agent-wallet plan 0x… --amount 0.01`
 
+
+## 2026-09-14 — Agent & web3-safety tip: Gas limits: under-estimating reverts the send
+
+If your gas limit is below what the transaction actually needs, the tx reverts — you pay the fee and the transfer fails. The plan's limit comes from eth_estimateGas with headroom; do not hand-trim it.
+
+> `grep '"gas"' plan.json`
+
