@@ -173,3 +173,10 @@ If your gas limit is below what the transaction actually needs, the tx reverts �
 
 > `grep '"gas"' plan.json`
 
+
+## 2026-09-15 — Agent & web3-safety tip: Testnet ≠ free of scams
+
+People absolutely farm testnet tokens and run phishing on Sepolia. Treat a testnet address like a mainnet one: same address-hygiene rules, same skepticism about 'prizes', 'airdrops', and 'verification' sites.
+
+> `agent-wallet inspect 0x…`
+
