@@ -180,3 +180,10 @@ People absolutely farm testnet tokens and run phishing on Sepolia. Treat a testn
 
 > `agent-wallet inspect 0x…`
 
+
+## 2026-09-16 — Agent & web3-safety tip: Agents make plans; humans make decisions
+
+An AI agent's job is to gather facts and explain risk clearly — not to push a button. If a tool or prompt ever urges you to 'just sign it', that is the moment to stop. You are the last line of defense.
+
+> `agent-wallet chat "explain the risk of this plan"`
+
