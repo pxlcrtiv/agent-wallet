@@ -187,3 +187,10 @@ An AI agent's job is to gather facts and explain risk clearly — not to push a 
 
 > `agent-wallet chat "explain the risk of this plan"`
 
+
+## 2026-09-17 — Agent & web3-safety tip: Your address is a fingerprint
+
+Reusing one address across chains and protocols links all of that activity. For portfolio experiments, generate fresh test wallets — anvil prints a new keypair list on every start.
+
+> `anvil`
+
