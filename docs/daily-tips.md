@@ -194,3 +194,10 @@ Reusing one address across chains and protocols links all of that activity. For 
 
 > `anvil`
 
+
+## 2026-09-18 — Agent & web3-safety tip: Read the revert reason, not the error code
+
+A revert like 'insufficient allowance' tells you exactly what to fix; a generic 'execution reverted' without data is a smoke signal. agent-wallet decodes Error(string) reasons so failures read like English.
+
+> `agent-wallet chat "dry run 0.01 ETH to 0x…"`
+
