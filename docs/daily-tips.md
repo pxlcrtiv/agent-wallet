@@ -215,3 +215,10 @@ agent-wallet requires typing the word 'sign' before it applies a signature. That
 
 > `agent-wallet sign plan.json`
 
+
+## 2026-09-21 — Agent & web3-safety tip: Balance checks are reads; sends are writes
+
+Reading a balance can never harm you. Signing and broadcasting change state forever. Keep the two verbs straight, and treat every 'send' as a permanent action even on a testnet.
+
+> `agent-wallet inspect 0x…`
+
