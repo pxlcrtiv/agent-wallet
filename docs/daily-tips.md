@@ -313,3 +313,10 @@ No cloud service, chat app, or AI agent should ever hold your private key. agent
 
 > `export AGENT_WALLET_PRIVATE_KEY=…`
 
+
+## 2026-10-06 — Agent & web3-safety tip: Nonce gaps block your wallet
+
+Transactions broadcast out of order (nonce 9 before 8) get stuck in the mempool and can stall the whole account. Check the nonce in the plan — it should be the next sequential number for your address.
+
+> `agent-wallet inspect 0x…`
+
