@@ -5,6 +5,28 @@ All notable changes to agent-wallet are documented here. The format follows
 [Semantic Versioning](https://semver.org/) (more or less — the "API" here is
 a CLI and a demo).
 
+## [Unreleased]
+
+### Added
+
+- **Token amounts** (`agent_wallet/amounts.py`): `TokenAmount` carries a raw
+  ERC-20 value together with the token's scale and symbol, and owns the
+  only conversion from raw units to a human number. `WalletService.token_amount`
+  is the single place decimals are read from the chain.
+
+### Fixed
+
+- Allowance amounts are scaled by the token's own decimals instead of a
+  hardcoded 6 — an 18-decimals token allowance (WETH, DAI) was reported
+  10^12 too large. Both branches of `check_allowance` now return the same
+  per-token keys, and balances carry the scaled amount too.
+
+### Changed
+
+- `risk.human_amount` is gone: token amounts are formatted by
+  `TokenAmount.display`, and `risk_notes` no longer defaults `token_decimals`
+  to 6.
+
 ## [0.1.0] — 2026-08-23
 
 Initial release. Sepolia-only, safety-by-design AI agent for testnet
