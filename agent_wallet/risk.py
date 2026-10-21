@@ -7,6 +7,7 @@ what could go wrong, and whether the chain is safe to use at all.
 
 from __future__ import annotations
 
+from .amounts import TokenAmount
 from .config import CHAIN_NAMES, KNOWN_TOKENS
 
 
@@ -16,10 +17,6 @@ def gwei(wei: int) -> float:
 
 def human_ether(wei: int) -> str:
     return "%.6f ETH" % (wei / 1e18)
-
-
-def human_amount(raw: int, decimals: int, symbol: str) -> str:
-    return "%.4f %s" % (raw / 10**decimals, symbol)
 
 
 def risk_notes(
@@ -35,9 +32,8 @@ def risk_notes(
     recipient_is_contract: bool,
     balance_wei: int,
     token_balance_raw: int | None = None,
-    token_decimals: int = 6,
+    token_decimals: int,
     symbol: str = "ETH",
-    allowance: int | None = None,
 ) -> list[str]:
     """Return a list of plain-English risk notes for the plan."""
     notes: list[str] = []
@@ -85,7 +81,8 @@ def risk_notes(
         if token_balance_raw < 0:
             notes.append("Insufficient %s balance — the transfer would revert at execution time." % symbol)
         else:
-            notes.append("Sender %s balance is %s." % (symbol, human_amount(token_balance_raw, token_decimals, symbol)))
+            amount = TokenAmount(raw=token_balance_raw, decimals=token_decimals, symbol=symbol)
+            notes.append("Sender %s balance is %s." % (symbol, amount.display))
     elif not token:
         total_need = value_wei + fee_wei
         if balance_wei < total_need:
@@ -96,11 +93,6 @@ def risk_notes(
         else:
             notes.append("Sender balance %s covers value + worst-case fee." % human_ether(balance_wei))
 
-    if allowance is not None and allowance > 0:
-        notes.append(
-            "Allowance exposure: an address already holds approval for %s test token(s) from this wallet. "
-            "Review approvals at revoke.cash before committing more." % human_amount(allowance, token_decimals or 6, symbol)
-        )
     return notes
 
 

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from web3 import Web3
 
+from .amounts import TokenAmount
 from .config import ERC20_ABI, KNOWN_TOKENS
 from .providers import parse_revert
 from .safety import ensure_testnet
@@ -47,13 +48,16 @@ class WalletService:
         for token_addr, meta in KNOWN_TOKENS.items():
             try:
                 raw = self.token_balance(addr, token_addr)
+                amount = self.token_amount(token_addr, raw)
                 tokens.append(
                     {
                         "address": Web3.to_checksum_address(token_addr),
-                        "symbol": meta["symbol"],
+                        "symbol": amount.symbol,
                         "name": meta["name"],
-                        "raw": raw,
-                        "decimals": self.token_decimals(token_addr),
+                        "raw": amount.raw,
+                        "decimals": amount.decimals,
+                        "human": amount.human,
+                        "display": amount.display,
                     }
                 )
             except Exception:
@@ -83,6 +87,19 @@ class WalletService:
         except Exception:
             return Web3.to_checksum_address(token)[:8]
 
+    def token_amount(self, token: str, raw: int = 0) -> TokenAmount:
+        """A raw amount in this token's units, with the token's real scale.
+
+        Decimals always come from the chain (``decimals()``) — never from a
+        constant.  The symbol comes from the known-token list when the token
+        is in it, and from the chain otherwise.  ``raw`` defaults to 0,
+        which is what you want when only the scale and symbol matter.
+        """
+        token_c = Web3.to_checksum_address(token)
+        meta = KNOWN_TOKENS.get(token_c.lower())
+        symbol = meta["symbol"] if meta else self.token_symbol(token_c)
+        return TokenAmount(raw=raw, decimals=self.token_decimals(token_c), symbol=symbol)
+
     # -- allowances -------------------------------------------------------------
 
     def get_allowance(self, owner: str, spender: str, token: str) -> int:
@@ -95,24 +112,30 @@ class WalletService:
 
     def check_allowance(self, owner: str | None = None, spender: str | None = None, token: str | None = None) -> dict:
         """Allowance snapshot for the owner, for every known token against a
-        spender, or a single (token, spender) pair."""
+        spender, or a single (token, spender) pair.
+
+        Both shapes carry the same per-token keys, and every amount is
+        scaled by the token's own decimals — read from the chain.
+        """
         owner_a = self._owner_or(owner)
         if token:
-            token = Web3.to_checksum_address(token)
+            token_c = Web3.to_checksum_address(token)
             spender_a = self._spender_or(spender)
-            raw = self.get_allowance(owner_a, spender_a, token)
-            meta = KNOWN_TOKENS.get(token.lower(), {"symbol": token[:8], "name": "unknown token"})
+            raw = self.get_allowance(owner_a, spender_a, token_c)
+            amount = self.token_amount(token_c, raw)
             return {
                 "owner": owner_a,
                 "spender": spender_a,
-                "token": token,
-                "symbol": meta["symbol"],
-                "raw": raw,
-                "decimals": 6,
-                "human": raw / 10**6,
+                "token": token_c,
+                "symbol": amount.symbol,
+                "raw": amount.raw,
+                "decimals": amount.decimals,
+                "human": amount.human,
+                "display": amount.display,
+                "exposed": amount.raw > 0,
                 "exposure_note": (
-                    "%s approved %s %s to %s" % (owner_a[:10], meta["symbol"], raw / 10**6, spender_a[:10])
-                    if raw > 0
+                    "%s approved %s %s to %s" % (owner_a[:10], amount.symbol, amount.human, spender_a[:10])
+                    if amount.raw > 0
                     else "no allowance found"
                 ),
             }
@@ -120,17 +143,20 @@ class WalletService:
         # DeFi routers are not present on testnets; just use a generic marker.
         spender_a = self._spender_or(spender)
         out = []
-        for token_addr, meta in KNOWN_TOKENS.items():
+        for token_addr in KNOWN_TOKENS:
             try:
                 raw = self.get_allowance(owner_a, spender_a, token_addr)
+                amount = self.token_amount(token_addr, raw)
                 out.append(
                     {
                         "token": Web3.to_checksum_address(token_addr),
-                        "symbol": meta["symbol"],
+                        "symbol": amount.symbol,
                         "spender": spender_a,
-                        "raw": raw,
-                        "human": raw / 10**6,
-                        "exposed": raw > 0,
+                        "raw": amount.raw,
+                        "decimals": amount.decimals,
+                        "human": amount.human,
+                        "display": amount.display,
+                        "exposed": amount.raw > 0,
                     }
                 )
             except Exception:

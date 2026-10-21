@@ -12,7 +12,7 @@
 
 | CI | Quality | Ecosystem |
 |----|---------|-----------|
-| [![CI](https://github.com/pxlcrtiv/agent-wallet/actions/workflows/ci.yml/badge.svg)](https://github.com/pxlcrtiv/agent-wallet/actions/workflows/ci.yml) | [![tests](https://img.shields.io/badge/tests-67%20passed-brightgreen)](https://github.com/pxlcrtiv/agent-wallet) | [![python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-3776AB?logo=python&logoColor=white)](https://www.python.org/) |
+| [![CI](https://github.com/pxlcrtiv/agent-wallet/actions/workflows/ci.yml/badge.svg)](https://github.com/pxlcrtiv/agent-wallet/actions/workflows/ci.yml) | [![tests](https://img.shields.io/badge/tests-74%20passed-brightgreen)](https://github.com/pxlcrtiv/agent-wallet) | [![python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-3776AB?logo=python&logoColor=white)](https://www.python.org/) |
 | [![Daily Green](https://github.com/pxlcrtiv/agent-wallet/actions/workflows/daily.yml/badge.svg)](https://github.com/pxlcrtiv/agent-wallet/actions/workflows/daily.yml) | [![ruff](https://img.shields.io/badge/lint-ruff-00A86B?logo=ruff)](https://github.com/astral-sh/ruff) | [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) |
 | [![Web3](https://img.shields.io/badge/web3.py-7.x-4b8bbe)](https://web3py.readthedocs.io/) | [![agent-lab](https://img.shields.io/badge/agent--core-agent--lab-8A2BE2)](https://github.com/pxlcrtiv/agent-lab) | [![testnet](https://img.shields.io/badge/network-Sepolia%20%7C%20anvil-yellow)](docs/SAFETY.md) |
 
@@ -62,7 +62,7 @@ calling.
 - **one `--sign` path** — confirmation word, chain re-check, dry-run
   re-check, faucet instructions; never signs on mainnet, never broadcasts
   unless you say `--broadcast`
-- **67 offline tests**, ruff-clean, CI-ready
+- **74 offline tests**, ruff-clean, CI-ready
 - **Daily Green automation** — one dated, meaningful commit per day (see
   below)
 
@@ -261,7 +261,7 @@ agent-wallet sign plan.json --keyfile ./testnet.key      # re-checks chain + dry
 | Chain access | [web3.py](https://web3py.readthedocs.io/) 7.x | the standard Ethereum Python client |
 | Account/signing | [eth-account](https://eth-account.readthedocs.io/) | typed tx signing, EIP-1559 |
 | CLI | [click](https://click.palletsprojects.com/) | composable command groups, `--rpc` tiers |
-| Tests | pytest (67, offline) + ruff | the safety rails deserve a real test suite |
+| Tests | pytest (74, offline) + ruff | the safety rails deserve a real test suite |
 | Local chain | [Foundry anvil](https://book.getfoundry.sh/anvil/) | pre-funded, deterministic, chain id 31337 |
 | CI | GitHub Actions | `ci.yml` (tests/lint/smoke) + `daily.yml` (Daily Green fallback) |
 
@@ -290,6 +290,7 @@ Log: [docs/daily-tips.md](docs/daily-tips.md)
 ```
 agent_wallet/
 ├── config.py      # chain allow-list, known tokens, ERC-20 ABI, faucets
+├── amounts.py     # token amounts: scale from the chain, one formatter
 ├── providers.py   # RPC resolution + deterministic in-memory fixture provider
 ├── safety.py      # mainnet guard rails + safety system prompt
 ├── wallet.py      # WalletService: balances, allowances, nonce, gas, dry-run
@@ -298,7 +299,7 @@ agent_wallet/
 ├── tools.py       # the four agent-lab tools (chain-guarded)
 ├── agent.py       # agent-lab loop wiring (Mock/openai backends)
 └── cli.py         # click CLI: plan / inspect / sign / chat / chain
-tests/             # 67 offline tests (fixtures:// — no network)
+tests/             # 74 offline tests (fixtures:// — no network)
 scripts/           # Daily Green automation
 docs/SAFETY.md     # why mainnet is default-off
 ```
