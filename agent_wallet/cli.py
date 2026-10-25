@@ -147,7 +147,7 @@ def inspect(ctx: click.Context, address: str | None) -> None:
     click.echo("balance   %s" % human_ether(balances["native_wei"]))
     click.echo("nonce     %d" % nonce)
     for t in balances.get("tokens", []):
-        click.echo("  token   %-5s %s" % (t["symbol"], t["raw"] / 10 ** t["decimals"]))
+        click.echo("  token   %-5s %s" % (t["symbol"], t["human"]))
     click.echo("allowances")
     for a in allowances.get("allowances", []):
         flag = "EXPOSED" if a["exposed"] else "clean"

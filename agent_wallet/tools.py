@@ -17,7 +17,7 @@ from agentlab import tool
 from web3 import Web3
 
 from .providers import FIXTURE_RECIPIENT, FIXTURE_SPENDER, FIXTURE_USER, resolve_rpc
-from .risk import human_amount, human_ether, risk_notes
+from .risk import human_ether, risk_notes
 from .txbuilder import UnsignedTxBuilder, erc20_transfer_data
 from .wallet import WalletService
 
@@ -62,7 +62,7 @@ def get_balances(address: str | None = None) -> dict:
         "native_eth": data["native_eth"],
         "native_wei": data["native_wei"],
         "tokens": [
-            {"symbol": t["symbol"], "human": t["raw"] / 10 ** t["decimals"], "raw": t["raw"], "address": t["address"]}
+            {"symbol": t["symbol"], "human": t["human"], "raw": t["raw"], "address": t["address"]}
             for t in data["tokens"]
         ],
     }
@@ -134,11 +134,13 @@ def plan_transfer(
 
     if token:
         token_c = Web3.to_checksum_address(token)
-        decimals = svc.token_decimals(token_c)
-        amount_raw = int(amount_eth * 10**decimals)
+        amount = svc.token_amount(token_c).with_human(amount_eth)
+        decimals = amount.decimals
+        amount_raw = amount.raw
+        symbol = amount.symbol
         data = erc20_transfer_data(to_c, amount_raw)
         value_wei = 0
-        symbol = svc.token_symbol(token_c)
+        value_human = amount.display
     else:
         token_c = None
         decimals = 18
@@ -146,6 +148,7 @@ def plan_transfer(
         data = "0x"
         value_wei = int(Web3.to_wei(amount_eth, "ether"))
         symbol = "ETH"
+        value_human = human_ether(value_wei)
 
     gas = svc.estimate_gas({"from": from_c, "to": token_c or to_c, "value": value_wei, "data": data}) or _DEFAULT_GAS
     fees = svc.suggest_fees()
@@ -182,7 +185,6 @@ def plan_transfer(
         symbol=symbol,
     )
     fee_wei = gas * fees["max_fee_per_gas_wei"]
-    value_human = human_amount(amount_raw, decimals, symbol) if token else human_ether(value_wei)
 
     return {
         "network": CHAIN_NAMES.get(cid, "unknown chain %d" % cid),

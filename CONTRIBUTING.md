@@ -24,7 +24,7 @@ pip install -e .[dev]
 ## Checks
 
 ```bash
-pytest tests -q              # 67 tests, fully offline
+pytest tests -q              # 74 tests, fully offline
 ruff check agent_wallet tests scripts
 ```
 
@@ -34,6 +34,7 @@ safety net for the safety net.
 ## Structure
 
 - `agent_wallet/wallet.py` — chain reads (balances, allowances, gas, dry-run)
+- `agent_wallet/amounts.py` — token scale + formatting; every raw amount goes through it
 - `agent_wallet/txbuilder.py` — unsigned typed transaction construction
 - `agent_wallet/tools.py` — agent-lab tools (read/plan only)
 - `agent_wallet/safety.py` — guards + prompts; **treat as sacred**

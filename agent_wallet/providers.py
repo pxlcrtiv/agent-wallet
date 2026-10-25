@@ -32,6 +32,7 @@ FIXTURE_SPENDER = "0x8888888888888888888888888888888888888888"
 
 FIXTURE_USDC = "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238"
 FIXTURE_USDT = "0xaA8E23Fb1079EA71e0a56F02a2aA36D7a4C3a637"
+FIXTURE_WETH = "0xfff9976782d46cc05630d1f6ebab18b2324d6b14"
 
 _H160 = "0x" + "00" * 20
 _EMPTY_CODE = "0x"
@@ -71,12 +72,17 @@ class FixturesProvider(BaseProvider):
         nonce: int = 7,
         gas_estimate: int = 52_000,
         base_fee_gwei: int = 1,
+        allowances: dict[str, int] | None = None,
     ) -> None:
         super().__init__()
         self.chain_id = chain_id
         self.user_balance_wei = user_balance_wei
         self.usdc_balance = usdc_balance
         self.allowance_out = allowance_out
+        # token address (lowercase) -> raw allowance held by the fixture
+        # spender.  Defaults to a 6-decimals token so the classic case stays
+        # covered; pass ``allowances`` to grant one on an 18-decimals token.
+        self.allowances = dict(allowances) if allowances is not None else {FIXTURE_USDC.lower(): allowance_out}
         self.nonce = nonce
         self.gas_estimate = gas_estimate
         self.base_fee_wei = base_fee_gwei * 10**9
@@ -176,9 +182,9 @@ class FixturesProvider(BaseProvider):
             owner_addr = "0x" + owner_arg
             has_funds = owner_addr == FIXTURE_USER.lower() and to == FIXTURE_USDC.lower()
             return "0x" + padded(self.usdc_balance if has_funds else 0)
-        # allowance(address,address) -> 0xdd62ed3e (USDC has exposure)
+        # allowance(address,address) -> 0xdd62ed3e (only granted tokens have exposure)
         if selector == "0xdd62ed3e":
-            return "0x" + padded(self.allowance_out if to == FIXTURE_USDC.lower() else 0)
+            return "0x" + padded(self.allowances.get(to.lower(), 0))
         # decimals() -> 0x313ce567 (USDC/USDT 6; WETH/DAI 18)
         if selector == "0x313ce567":
             return "0x" + padded(6 if to in (FIXTURE_USDC.lower(), FIXTURE_USDT.lower()) else 18)
@@ -271,6 +277,7 @@ def provider_fixture_state(w3: Web3) -> dict:
         "user_balance_wei": prov.user_balance_wei,
         "usdc_balance": prov.usdc_balance,
         "allowance_out": prov.allowance_out,
+        "allowances": dict(prov.allowances),
         "nonce": prov.nonce,
         "gas_estimate": prov.gas_estimate,
         "base_fee_wei": prov.base_fee_wei,

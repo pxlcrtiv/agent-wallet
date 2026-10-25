@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from web3 import Web3
 
-from agent_wallet.providers import FixturesProvider
+from agent_wallet.providers import FIXTURE_USDC, FIXTURE_USER, FIXTURE_WETH, FixturesProvider
 from agent_wallet.wallet import WalletService
 
 
@@ -18,6 +18,24 @@ def w3() -> Web3:
 @pytest.fixture()
 def svc(w3: Web3) -> WalletService:
     return WalletService(w3, owner="0x1111111111111111111111111111111111111111")
+
+
+@pytest.fixture()
+def svc_with_weth_allowance() -> WalletService:
+    """A wallet whose fixture spender also holds a 1 WETH approval.
+
+    WETH is an 18-decimals token, so it catches any amount that is scaled
+    by a hardcoded 6.
+    """
+    w3 = Web3(
+        FixturesProvider(
+            allowances={
+                FIXTURE_USDC.lower(): 1_000_000_000,
+                FIXTURE_WETH.lower(): 10**18,
+            }
+        )
+    )
+    return WalletService(w3, owner=FIXTURE_USER)
 
 
 class NoBaseFeeProvider(FixturesProvider):
